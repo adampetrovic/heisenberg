@@ -15,20 +15,34 @@ class SSHCommand(BaseCommand):
         ('role', 'Role'),
     ])
 
-    def ssh_host(self, instance):
+    def ssh_host(self, instances):
+        for instance in instances:
+            print ">> Connecting to: {name} - {dns}".format(
+                name=instance.get("name", "unknown"),
+                dns=instance.get("dns_name")
+            )
 
-        if type(instance) == list:
-            instance = instance.pop()
+            subprocess.call([
+                'ssh',
+                instance.get('dns_name'),
+            ])
 
-        print ">> Connecting to: {name} - {dns}".format(
-            name=instance.get("name", "unknown"),
-            dns=instance.get("dns_name")
-        )
+        sys.exit(0)
 
-        subprocess.call([
-            'ssh',
-            instance.get('dns_name'),
-        ])
+    def ssh_cmd_host(self, instances, command):
+        for instance in instances:
+            print ">> Performing command '{cmd}' on {name} - {dns}".format(
+                cmd=command,
+                name=instance.get('name', 'unknown'),
+                dns=instance.get('dns_name', 'dns_name')
+            )
+
+            result = subprocess.call([
+                'ssh',
+                instance.get('dns_name'),
+                command
+            ])
+
         sys.exit(0)
 
     def execute(self, args):
@@ -55,9 +69,13 @@ class SSHCommand(BaseCommand):
         )
 
         if not len(sorted_instances):
-            sys.stderr.write("No instances found")
+            sys.stderr.write("No instances found\n")
             sys.exit(1)
 
         self.draw_output()
         hosts = self.select_hosts(sorted_instances)
-        self.ssh_host(hosts)
+
+        if args.command == "ssh":
+            self.ssh_host(hosts)
+        elif args.command == "cmd":
+            self.ssh_cmd_host(hosts, args.ssh_command)

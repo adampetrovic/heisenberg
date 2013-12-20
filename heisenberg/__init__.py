@@ -10,6 +10,7 @@ class Heisenberg(object):
         self.commands = dict(
             find=commands.FindCommand,
             ssh=commands.SSHCommand,
+            cmd=commands.SSHCommand,
         )
 
         self.args = args

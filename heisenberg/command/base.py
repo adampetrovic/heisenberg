@@ -15,7 +15,6 @@ class BaseCommand(object):
     def draw_output(self):
         self.output.draw()
 
-
     @classmethod
     def search(self, instance, search_key, pattern):
         pattern = pattern.lower()
@@ -57,7 +56,7 @@ class BaseCommand(object):
                     for id in (i.strip() for i in host_input.split(',')):
                         if "-" in id:
                             start, end = map(int, id.split("-", 1))
-                            for i in instances[start:end]:
+                            for i in instances[start:end+1]:
                                 choices.append(i)
                         else:
                             id = int(id)
