@@ -17,7 +17,7 @@ class SSHCommand(BaseCommand):
 
     def ssh_host(self, instances):
         for instance in instances:
-            print ">> Connecting to: {name} - {dns}".format(
+            print ">> Connecting to: \033[92m{name} - {dns}\033[0m".format(
                 name=instance.get("name", "unknown"),
                 dns=instance.get("dns_name")
             )
@@ -31,7 +31,7 @@ class SSHCommand(BaseCommand):
 
     def ssh_cmd_host(self, instances, command):
         for instance in instances:
-            print ">> Performing command '{cmd}' on {name} - {dns}".format(
+            print ">> Performing command \033[93m'{cmd}'\033[0m on \033[92m{name} - {dns}\033[0m".format(
                 cmd=command,
                 name=instance.get('name', 'unknown'),
                 dns=instance.get('dns_name', 'dns_name')
@@ -69,7 +69,7 @@ class SSHCommand(BaseCommand):
         )
 
         if not len(sorted_instances):
-            sys.stderr.write("No instances found\n")
+            sys.stderr.write("\033[91mERROR:\033[0m No instances found\n")
             sys.exit(1)
 
         self.draw_output()

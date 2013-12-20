@@ -38,7 +38,7 @@ class FindCommand(BaseCommand):
         )
 
         if not len(sorted_instances):
-            sys.stderr.write("No instances found\n")
+            sys.stderr.write("\033[91mERROR:\033[0m No instances found\n")
             sys.exit(1)
 
         self.draw_output()
