@@ -1,0 +1,85 @@
+#!/bin/env python
+
+import sys
+import argparse
+import ConfigParser
+from os.path import expanduser
+
+from heisenberg import Heisenberg
+
+def main(args):
+    heisen = Heisenberg(args)
+    heisen.execute_command()
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        prog='ec2',
+        description='A utility for searching and connecting to EC2 instances',
+    )
+
+    parser.add_argument('-c', '--config', dest='config',
+                    default=expanduser("~/.heisenberg"), help='Configuration file', metavar='FILE')
+
+    parser.add_argument('-z', '--cache-file', dest='cache_file',
+                    default=expanduser("~/.heisenberg_cache"), help='Cache file', metavar='FILE')
+
+    parser.add_argument('-r', '--refresh', dest='refresh',
+                    help='Refresh internal AWS instance cache', action="store_true")
+
+    parser.add_argument('--access-key', dest='access_key',
+                    help='AWS Access Key', metavar='AWS_ACCESS_KEY')
+
+    parser.add_argument('--secret-key', dest='secret_key',
+                    help='AWS Secret Key', metavar='AWS_SECRET_KEY')
+
+    # sub-commands
+    subparsers = parser.add_subparsers()
+    parser_find = subparsers.add_parser('find', help='List all the EC2 instances that match a pattern')
+    parser_find.set_defaults(command='find')
+    parser_ssh = subparsers.add_parser('ssh', help='Connect to EC2 host(s)')
+    parser_ssh.set_defaults(command='ssh')
+    parser_cmd = subparsers.add_parser('cmd', help='Run command(s) on matching EC2 host(s)')
+    parser_cmd.set_defaults(command='cmd')
+
+    # sub-command arguments
+    parser_find.add_argument('search_pattern',
+                        type=str, help='A search pattern')
+    parser_find.add_argument('-s', '--sort-key',
+                        default='name', type=str, help='The column to sort results')
+    parser_find.add_argument('-p', '--search-key',
+                        default='name', type=str, help='The column to choose when searching')
+
+
+    parser_ssh.add_argument('search_pattern',
+                        type=str, help='A search pattern')
+    parser_ssh.add_argument('-s', '--sort-key',
+                        default='name', type=str, help='The column to sort results')
+    parser_ssh.add_argument('-p', '--search-key',
+                        default='name', type=str, help='The column to choose when searching')
+
+    parser_cmd.add_argument('search_pattern',
+                        type=str, help='A search pattern')
+    parser_cmd.add_argument('ssh_command',
+                        type=str, help='A search pattern')
+    parser_cmd.add_argument('-s', '--sort-key',
+                        default='name', type=str, help='The column to sort results')
+    parser_cmd.add_argument('-p', '--search-key',
+                        default='name', type=str, help='The column to choose when searching')
+
+
+    args = parser.parse_args()
+
+    config = ConfigParser.ConfigParser()
+    config.read(args.config)
+
+    try:
+        args.access_key = config.get('aws', 'access_key')
+        args.secret_key = config.get('aws', 'secret_key')
+    except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+        sys.stderr.write("ERROR: Malformed config file: {config}\n".format(
+            config=args.config
+        ))
+        sys.exit(1)
+
+    # start execution
+    main(args)
