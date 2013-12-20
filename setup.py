@@ -23,9 +23,9 @@ setup(
     url='https://gitlab.freelancer.com/adam/heisenberg',
     packages=[
         'heisenberg',
+        'heisenberg.command',
     ],
     scripts=['bin/ec2'],
-    package_dir={'heisenberg': 'heisenberg'},
     include_package_data=True,
     install_requires=[
         'boto==2.20.1',
