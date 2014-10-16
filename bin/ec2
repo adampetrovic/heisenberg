@@ -71,7 +71,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument('-c', '--config', dest='config',
-                    default=expanduser("~/.heisenberg"), help='Configuration file', metavar='FILE')
+                    default=expanduser("~/.aws/credentials"), help='Configuration file', metavar='FILE')
 
     parser.add_argument('-z', '--cache-file', dest='cache_file',
                     default=expanduser("~/.heisenberg_cache"), help='Cache file', metavar='FILE')
@@ -131,8 +131,8 @@ if __name__ == "__main__":
 
     try:
         if not args.secret_key and not args.access_key:
-            args.access_key = config.get('aws', 'access_key')
-            args.secret_key = config.get('aws', 'secret_key')
+            args.access_key = config.get('default', 'aws_access_key_id')
+            args.secret_key = config.get('default', 'aws_secret_access_key')
     except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
         sys.stderr.write("ERROR: Malformed config file: {config}\n".format(
             config=args.config
