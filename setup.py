@@ -28,7 +28,7 @@ setup(
     scripts=['bin/ec2'],
     include_package_data=True,
     install_requires=[
-        'boto==2.20.1',
+        'boto',
         'texttable',
     ],
     zip_safe=False,

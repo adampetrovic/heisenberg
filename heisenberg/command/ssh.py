@@ -15,21 +15,26 @@ class SSHCommand(BaseCommand):
         ('role', 'Role'),
     ])
 
-    def ssh_host(self, instances):
+    def ssh_host(self, instances, user):
         for instance in instances:
             print ">> Connecting to: \033[92m{name} - {dns}\033[0m".format(
                 name=instance.get("name", "unknown"),
                 dns=instance.get("dns_name")
             )
 
+            host_string = "{user}@{dns}".format(
+                user=user,
+                dns=instance.get('dns_name'),
+            )
+
             subprocess.call([
                 'ssh',
-                instance.get('dns_name'),
+                host_string,
             ])
 
         sys.exit(0)
 
-    def ssh_cmd_host(self, instances, command):
+    def ssh_cmd_host(self, instances, command, user):
         for instance in instances:
             print ">> Performing command \033[93m'{cmd}'\033[0m on \033[92m{name} - {dns}\033[0m".format(
                 cmd=command,
@@ -37,11 +42,37 @@ class SSHCommand(BaseCommand):
                 dns=instance.get('dns_name', 'dns_name')
             )
 
+            host_string = "{user}@{dns}".format(
+                user=user,
+                dns=instance.get('dns_name'),
+            )
+
             result = subprocess.call([
                 'ssh',
-                instance.get('dns_name'),
+                host_string,
                 command
             ])
+
+        sys.exit(0)
+
+    def ssh_cmd_local(self, instances, command, user):
+        for instance in instances:
+            host_string = "{user}@{dns}".format(
+                user=user,
+                dns=instance.get('dns_name'),
+            )
+
+            full_command = command.format(
+                host=host_string,
+            )
+
+            print ">> Performing command \033[93m'{cmd}'\033[0m with \033[92m{name} - {dns}\033[0m".format(
+                cmd=full_command,
+                name=instance.get('name', 'unknown'),
+                dns=instance.get('dns_name', 'dns_name')
+            )
+
+            result = subprocess.call(full_command, shell=True)
 
         sys.exit(0)
 
@@ -76,6 +107,9 @@ class SSHCommand(BaseCommand):
         hosts = self.select_hosts(sorted_instances)
 
         if args.command == "ssh":
-            self.ssh_host(hosts)
+            self.ssh_host(hosts, args.user)
         elif args.command == "cmd":
-            self.ssh_cmd_host(hosts, args.ssh_command)
+            self.ssh_cmd_host(hosts, args.ssh_command, args.user)
+        elif args.command == "local":
+            self.ssh_cmd_local(hosts, args.ssh_command, args.user)
+

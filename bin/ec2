@@ -7,6 +7,59 @@ from os.path import expanduser
 
 from heisenberg import Heisenberg
 
+def add_sub_command(subparsers, name, help="", search=False, ssh=False, cmd=False, command=None):
+    if command is None:
+        command = name
+
+    parser = subparsers.add_parser(name, help=help)
+    parser.set_defaults(command=command)
+
+    if search:
+        add_search_arguments(parser)
+    if cmd:
+        add_cmd_arguments(parser)
+    if ssh:
+        add_ssh_arguments(parser)
+
+    return parser
+
+def add_search_arguments(parser):
+    parser.add_argument(
+        'search_pattern',
+        type=str,
+        help='A search pattern'
+    )
+    parser.add_argument(
+        '-s',
+        '--sort-key',
+        default='name',
+        type=str,
+        help='The column to sort results'
+    )
+    parser.add_argument(
+        '-p',
+        '--search-key',
+        default='name',
+        type=str,
+        help='The column to choose when searching'
+    )
+
+def add_ssh_arguments(parser):
+    parser.add_argument(
+        '-u',
+        '--user',
+        default='ubuntu',
+        type=str,
+        help='The username to use when connecting'
+    )
+
+def add_cmd_arguments(parser):
+    parser.add_argument(
+        'ssh_command',
+        type=str,
+        help='The command to run on',
+    )
+
 def main(args):
     heisen = Heisenberg(args)
     heisen.execute_command()
@@ -34,38 +87,42 @@ if __name__ == "__main__":
 
     # sub-commands
     subparsers = parser.add_subparsers()
-    parser_find = subparsers.add_parser('find', help='List all the EC2 instances that match a pattern')
-    parser_find.set_defaults(command='find')
-    parser_ssh = subparsers.add_parser('ssh', help='Connect to EC2 host(s)')
-    parser_ssh.set_defaults(command='ssh')
-    parser_cmd = subparsers.add_parser('cmd', help='Run command(s) on matching EC2 host(s)')
-    parser_cmd.set_defaults(command='cmd')
 
-    # sub-command arguments
-    parser_find.add_argument('search_pattern',
-                        type=str, help='A search pattern')
-    parser_find.add_argument('-s', '--sort-key',
-                        default='name', type=str, help='The column to sort results')
-    parser_find.add_argument('-p', '--search-key',
-                        default='name', type=str, help='The column to choose when searching')
+    add_sub_command(
+        subparsers,
+        'find',
+        help='List all the EC2 instances that match a pattern',
+        search=True,
+        ssh=False,
+        cmd=False,
+    )
 
+    add_sub_command(
+        subparsers,
+        'ssh',
+        help='Connect to EC2 host(s)',
+        search=True,
+        ssh=True,
+        cmd=False,
+    )
 
-    parser_ssh.add_argument('search_pattern',
-                        type=str, help='A search pattern')
-    parser_ssh.add_argument('-s', '--sort-key',
-                        default='name', type=str, help='The column to sort results')
-    parser_ssh.add_argument('-p', '--search-key',
-                        default='name', type=str, help='The column to choose when searching')
+    add_sub_command(
+        subparsers,
+        'cmd',
+        help='Run command(s) on matching EC2 host(s)',
+        search=True,
+        ssh=True,
+        cmd=True,
+    )
 
-    parser_cmd.add_argument('search_pattern',
-                        type=str, help='A search pattern')
-    parser_cmd.add_argument('ssh_command',
-                        type=str, help='A search pattern')
-    parser_cmd.add_argument('-s', '--sort-key',
-                        default='name', type=str, help='The column to sort results')
-    parser_cmd.add_argument('-p', '--search-key',
-                        default='name', type=str, help='The column to choose when searching')
-
+    add_sub_command(
+        subparsers,
+        'local',
+        help='Run command(s) locally and subbing in matching EC2 host(s) as {host}',
+        search=True,
+        ssh=True,
+        cmd=True,
+    )
 
     args = parser.parse_args()
 

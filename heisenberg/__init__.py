@@ -11,6 +11,7 @@ class Heisenberg(object):
             find=commands.FindCommand,
             ssh=commands.SSHCommand,
             cmd=commands.SSHCommand,
+            local=commands.SSHCommand,
         )
 
         self.args = args
@@ -24,7 +25,7 @@ class Heisenberg(object):
         self.boto_conn.connect()
 
     def get_command(self):
-        return self.commands.get(self.args.command, None)
+        return self.commands[self.args.command]
 
     def execute_command(self):
         command_class = self.get_command()
