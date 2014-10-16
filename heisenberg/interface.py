@@ -1,5 +1,4 @@
 import texttable
-import os
 
 
 class AsciiTable(object):
@@ -11,6 +10,10 @@ class AsciiTable(object):
         }
 
         self.table = texttable.Texttable(max_width=300)
+
+        self.table.set_cols_align(alignment['horizontal'])
+        self.table.set_cols_valign(alignment['vertical'])
+
         self.table.set_deco(
             (texttable.Texttable.BORDER |
              texttable.Texttable.HEADER |

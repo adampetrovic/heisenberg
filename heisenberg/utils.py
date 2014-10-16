@@ -1,6 +1,7 @@
 import boto
 import json
 
+
 class BotoEC2Helper(object):
 
     instance_filter = [
@@ -33,7 +34,6 @@ class BotoEC2Helper(object):
 
     def _boto_fetch(self):
         instances = []
-
         filter_fun = lambda x: x[0] in self.instance_filter
 
         for res in self.conn.get_all_instances(filters=self.ec2_filter):

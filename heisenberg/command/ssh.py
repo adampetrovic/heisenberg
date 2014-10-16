@@ -47,7 +47,7 @@ class SSHCommand(BaseCommand):
                 dns=instance.get('dns_name'),
             )
 
-            result = subprocess.call([
+            subprocess.call([
                 'ssh',
                 host_string,
                 command

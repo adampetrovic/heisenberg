@@ -1,4 +1,5 @@
 import sys
+import string
 
 
 class BaseCommand(object):
@@ -42,30 +43,33 @@ class BaseCommand(object):
 
     @classmethod
     def select_hosts(self, instances):
-        if len(instances) > 1:
-            while True:
-                try:
-                    host_input = raw_input(">> Please choose the instances(s) [0-%d]: " % (
-                        len(instances)-1
-                    )).strip()
+        while len(instances) > 1:
+            try:
+                host_input = raw_input(">> Please choose the instances(s) [0-%d]: " % (
+                    len(instances)-1
+                )).strip()
 
-                    if host_input == "all":
-                        break
+                if host_input == "all":
+                    break
+                choices = []
+                # strip each element in comma separated input (1 element if no ,)
+                comma_input = map(string.strip, host_input.split(','))
+                for id in comma_input:
+                    # check if range approach
+                    if "-" in id:
+                        # extract out start and end and cast to int
+                        start, end = map(int, id.split("-", 1))
+                        for i in instances[start:end+1]:
+                            choices.append(i)
+                    else:
+                        choices.append(instances[int(id)])
 
-                    choices = []
-                    for id in (i.strip() for i in host_input.split(',')):
-                        if "-" in id:
-                            start, end = map(int, id.split("-", 1))
-                            for i in instances[start:end+1]:
-                                choices.append(i)
-                        else:
-                            id = int(id)
-                            choices.append(instances[id])
-
-                    return choices
-                except (ValueError, IndexError):
-                    continue
-                except KeyboardInterrupt:
-                    sys.exit(0)
+                # function returns a list of instances, so if only one instance
+                # return the list
+                return choices
+            except (ValueError, IndexError):
+                continue
+            except KeyboardInterrupt:
+                sys.exit(0)
 
         return instances

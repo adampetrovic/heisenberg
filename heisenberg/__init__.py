@@ -1,8 +1,7 @@
-import logging
-
 import heisenberg.command as commands
 import heisenberg.interface as interfaces
 from heisenberg.utils import BotoEC2Helper
+
 
 class Heisenberg(object):
 
@@ -17,9 +16,9 @@ class Heisenberg(object):
         self.args = args
 
         self.boto_conn = BotoEC2Helper(
-            access_key = args.access_key,
-            secret_key = args.secret_key,
-            cache_file = args.cache_file,
+            access_key=args.access_key,
+            secret_key=args.secret_key,
+            cache_file=args.cache_file,
         )
 
         self.boto_conn.connect()
