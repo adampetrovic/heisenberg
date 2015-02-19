@@ -18,6 +18,7 @@ class Heisenberg(object):
         self.boto_conn = BotoEC2Helper(
             access_key=args.access_key,
             secret_key=args.secret_key,
+            region=args.region,
             cache_file=args.cache_file,
         )
 

@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 
 import sys
 import argparse
@@ -85,6 +85,12 @@ if __name__ == "__main__":
     parser.add_argument('--secret-key', dest='secret_key',
                     help='AWS Secret Key', metavar='AWS_SECRET_KEY')
 
+    parser.add_argument('--region', dest='region',
+                    help='AWS default region', metavar='AWS_REGION')
+
+    parser.add_argument('--profile', dest='profile', default='default',
+                    help='AWSCLI profile', metavar='AWS_PROFILE')
+
     # sub-commands
     subparsers = parser.add_subparsers()
 
@@ -126,13 +132,24 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    config = ConfigParser.ConfigParser()
-    config.read(args.config)
+    if not args.region:
+        try:
+            config = ConfigParser.ConfigParser()
+            config.read(expanduser("~/.aws/config"))
+
+            profile = args.profile or 'default'
+            args.region = config.get('profile ' + profile, 'region')
+        except:
+            args.region = 'us-east-1'
 
     try:
         if not args.secret_key and not args.access_key:
-            args.access_key = config.get('default', 'aws_access_key_id')
-            args.secret_key = config.get('default', 'aws_secret_access_key')
+            credentials = ConfigParser.ConfigParser()
+            credentials.read(args.config)
+
+            args.access_key = credentials.get(args.profile, 'aws_access_key_id')
+            args.secret_key = credentials.get(args.profile, 'aws_secret_access_key')
+
     except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
         sys.stderr.write("ERROR: Malformed config file: {config}\n".format(
             config=args.config
