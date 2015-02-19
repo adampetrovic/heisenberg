@@ -16,16 +16,17 @@ class BotoEC2Helper(object):
         'instance-state-name': 'running'
     }
 
-    def __init__(self, access_key, secret_key, region, cache_file):
+    def __init__(self, access_key, secret_key, region, profile, cache_file):
         self.access_key = access_key
         self.secret_key = secret_key
         self.region = region
+        self.profile = profile
         self.cache_file = cache_file
 
         try:
             self.cache = json.load(open(self.cache_file, 'rb'))
-        except (IOError, ValueError):
-            self.cache = None
+        except (IOError, ValueError, KeyError):
+            self.cache = {}
 
     def connect(self):
         self.conn = boto.ec2.connect_to_region(
@@ -46,10 +47,19 @@ class BotoEC2Helper(object):
         return instances
 
     def _refresh_cache(self):
-        self.cache = self._boto_fetch()
+        if self.profile not in self.cache:
+            self.cache[self.profile] = {}
+
+        self.cache[self.profile][self.region] = self._boto_fetch()
         json.dump(self.cache, open(self.cache_file, 'wb'))
 
     def fetch_all(self, fresh=False):
-        if fresh or not self.cache:
+        cache = None
+        try:
+            cache = self.cache[self.profile][self.region]
+        except KeyError:
+            pass
+
+        if fresh or not cache:
             self._refresh_cache()
-        return self.cache
+        return self.cache[self.profile][self.region]

@@ -19,6 +19,7 @@ class Heisenberg(object):
             access_key=args.access_key,
             secret_key=args.secret_key,
             region=args.region,
+            profile=args.profile,
             cache_file=args.cache_file,
         )
 

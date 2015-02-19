@@ -132,13 +132,15 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    profile = 'default'
+    if args.profile and args.profile != 'default':
+        profile = 'profile {}'.format(args.profile)
+
     if not args.region:
         try:
             config = ConfigParser.ConfigParser()
             config.read(expanduser("~/.aws/config"))
-
-            profile = args.profile or 'default'
-            args.region = config.get('profile ' + profile, 'region')
+            args.region = config.get(profile, 'region')
         except:
             args.region = 'us-east-1'
 
@@ -147,8 +149,8 @@ if __name__ == "__main__":
             credentials = ConfigParser.ConfigParser()
             credentials.read(args.config)
 
-            args.access_key = credentials.get(args.profile, 'aws_access_key_id')
-            args.secret_key = credentials.get(args.profile, 'aws_secret_access_key')
+            args.access_key = credentials.get(profile, 'aws_access_key_id')
+            args.secret_key = credentials.get(profile, 'aws_secret_access_key')
 
     except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
         sys.stderr.write("ERROR: Malformed config file: {config}\n".format(
