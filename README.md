@@ -4,7 +4,7 @@ Heisenberg
 Overview
 --------
 
-A better EC2 search / SSH utility
+A better EC2 search / SSH utility that caches for quicker interaction with instances
 
 Installation
 ------------
@@ -17,10 +17,10 @@ python setup.py install
 
 Configuration
 -------------
-The default configuration should be placed in ~/.heisenberg, it should contain:
+The default configuration should be placed in ~/.aws/config, it should contain:
 
 ```
-[aws]
+[default]
 access_key=<AWS_ACCESS_KEY>
 secret_key=<AWS_SECRET_KEY>
 ```
@@ -30,7 +30,7 @@ Usage
 
 ```
 usage: ec2 [-h] [-c FILE] [-z FILE] [-r] [--access-key AWS_ACCESS_KEY]
-           [--secret-key AWS_SECRET_KEY]
+           [--secret-key AWS_SECRET_KEY] [--region REGION] [--profile PROFILE]
            {find,ssh,cmd} ...
 
 A utility for searching and connecting to EC2 instances
@@ -52,6 +52,10 @@ optional arguments:
                         AWS Access Key
   --secret-key AWS_SECRET_KEY
                         AWS Secret Key
+  --region REGION
+                        AWS Region to operate in 
+  --profile PROFILE
+                        Profile to use in ~/.aws/config. Takes the form [profile <name>]
 ```
 
 *NOTE*: The first search run will take a little while, as the Heisenberg cache is being built.
