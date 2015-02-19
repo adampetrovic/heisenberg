@@ -1,4 +1,4 @@
-import boto
+import boto.ec2
 import json
 
 
@@ -16,9 +16,10 @@ class BotoEC2Helper(object):
         'instance-state-name': 'running'
     }
 
-    def __init__(self, access_key, secret_key, cache_file):
+    def __init__(self, access_key, secret_key, region, cache_file):
         self.access_key = access_key
         self.secret_key = secret_key
+        self.region = region
         self.cache_file = cache_file
 
         try:
@@ -27,7 +28,8 @@ class BotoEC2Helper(object):
             self.cache = None
 
     def connect(self):
-        self.conn = boto.connect_ec2(
+        self.conn = boto.ec2.connect_to_region(
+            self.region,
             aws_access_key_id=self.access_key,
             aws_secret_access_key=self.secret_key,
         )
