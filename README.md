@@ -9,6 +9,12 @@ A better EC2 search / SSH utility that caches for quicker interaction with insta
 Installation
 ------------
 
+```
+pip install heisenberg-ec2
+```
+
+OR
+
 Clone this repository and run:
 
 ```
@@ -17,12 +23,27 @@ python setup.py install
 
 Configuration
 -------------
-The default configuration should be placed in ~/.aws/config, it should contain:
+The default credentials configuration should be placed in ~/.aws/credentials, it should look something like this:
 
 ```
 [default]
 access_key=<AWS_ACCESS_KEY>
 secret_key=<AWS_SECRET_KEY>
+
+[profile production]
+access_key=<AWS_ACCESS_KEY>
+secret_key=<AWS_SECRET_KEY>
+
+[profile testing]
+access_key=<AWS_ACCESS_KEY>
+secret_key=<AWS_SECRET_KEY>
+```
+
+You may also have a ~/.aws/config file which contains region information
+
+```
+[default]
+region=us-east-1a
 ```
 
 Usage

@@ -15,13 +15,13 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 setup(
-    name='heisenberg',
-    version='1.0',
+    name='heisenberg-ec2',
+    version='1.0.1',
     description='A utility for searching and connecting to EC2 instances with caching for quicker interaction',
     author='Adam Petrovic',
     author_email='adam@petrovic.com.au',
     url='https://github.com/adampetrovic/heisenberg',
-    download_url='https://github.com/adampetrovic/heisenberg/tarball/1.0',
+    download_url='https://github.com/adampetrovic/heisenberg/tarball/1.0.1',
     packages=[
         'heisenberg',
         'heisenberg.command',
@@ -42,7 +42,5 @@ setup(
         "Programming Language :: Python :: 2",
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
     ],
 )
