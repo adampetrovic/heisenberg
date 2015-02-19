@@ -17,10 +17,11 @@ if sys.argv[-1] == 'publish':
 setup(
     name='heisenberg',
     version='0.1',
-    description='A utility for searching and connecting to EC2 instances',
+    description='A utility for searching and connecting to EC2 instances with caching for quicker interaction',
     author='Adam Petrovic',
-    author_email='adam@freelancer.com',
-    url='https://gitlab.freelancer.com/adam/heisenberg',
+    author_email='adam@petrovic.com.au',
+    url='https://github.com/adampetrovic/heisenberg',
+    download_url='https://github.com/adampetrovic/heisenberg/tarball/0.1',
     packages=[
         'heisenberg',
         'heisenberg.command',
