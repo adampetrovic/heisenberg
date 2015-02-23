@@ -16,12 +16,12 @@ if sys.argv[-1] == 'publish':
 
 setup(
     name='heisenberg-ec2',
-    version='1.0.2',
+    version='1.0.3',
     description='A utility for searching and connecting to EC2 instances with caching for quicker interaction',
     author='Adam Petrovic',
     author_email='adam@petrovic.com.au',
     url='https://github.com/adampetrovic/heisenberg',
-    download_url='https://github.com/adampetrovic/heisenberg/tarball/1.0.2',
+    download_url='https://github.com/adampetrovic/heisenberg/tarball/1.0.3',
     packages=[
         'heisenberg',
         'heisenberg.command',
