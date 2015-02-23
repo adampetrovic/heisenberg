@@ -3,6 +3,7 @@
 import sys
 import argparse
 import ConfigParser
+import getpass
 from os.path import expanduser
 
 from heisenberg import Heisenberg
@@ -48,7 +49,7 @@ def add_ssh_arguments(parser):
     parser.add_argument(
         '-u',
         '--user',
-        default='ubuntu',
+        default=getpass.getuser(),
         type=str,
         help='The username to use when connecting'
     )
