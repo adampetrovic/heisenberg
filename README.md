@@ -27,16 +27,16 @@ The default credentials configuration should be placed in ~/.aws/credentials, it
 
 ```
 [default]
-access_key=<AWS_ACCESS_KEY>
-secret_key=<AWS_SECRET_KEY>
+aws_access_key_id=<AWS_ACCESS_KEY>
+aws_secret_access_key=<AWS_SECRET_KEY>
 
 [profile production]
-access_key=<AWS_ACCESS_KEY>
-secret_key=<AWS_SECRET_KEY>
+aws_access_key_id=<AWS_ACCESS_KEY>
+aws_secret_access_key=<AWS_SECRET_KEY>
 
 [profile testing]
-access_key=<AWS_ACCESS_KEY>
-secret_key=<AWS_SECRET_KEY>
+aws_access_key_id=<AWS_ACCESS_KEY>
+aws_secret_access_key=<AWS_SECRET_KEY>
 ```
 
 You may also have a ~/.aws/config file which contains region information
