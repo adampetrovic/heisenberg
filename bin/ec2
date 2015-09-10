@@ -49,7 +49,6 @@ def add_ssh_arguments(parser):
     parser.add_argument(
         '-u',
         '--user',
-        default=getpass.getuser(),
         type=str,
         help='The username to use when connecting'
     )

@@ -15,6 +15,12 @@ class SSHCommand(BaseCommand):
         ('role', 'Role'),
     ])
 
+    def _ssh_host_string(self, dns, user=None):
+        if user is not None:
+            return "{user}@{dns}".format(user=user, dns=dns)
+        else:
+            return dns
+
     def ssh_host(self, instances, user):
         for instance in instances:
             print ">> Connecting to: \033[92m{name} - {dns}\033[0m".format(
@@ -22,14 +28,9 @@ class SSHCommand(BaseCommand):
                 dns=instance.get("dns_name")
             )
 
-            host_string = "{user}@{dns}".format(
-                user=user,
-                dns=instance.get('dns_name'),
-            )
-
             subprocess.call([
                 'ssh',
-                host_string,
+                self._ssh_host_string(instance.get('dns_name'), user)
             ])
 
         sys.exit(0)
@@ -42,14 +43,9 @@ class SSHCommand(BaseCommand):
                 dns=instance.get('dns_name', 'dns_name')
             )
 
-            host_string = "{user}@{dns}".format(
-                user=user,
-                dns=instance.get('dns_name'),
-            )
-
             subprocess.call([
                 'ssh',
-                host_string,
+                self._ssh_host_string(instance.get('dns_name'), user),
                 command
             ])
 
@@ -57,13 +53,8 @@ class SSHCommand(BaseCommand):
 
     def ssh_cmd_local(self, instances, command, user):
         for instance in instances:
-            host_string = "{user}@{dns}".format(
-                user=user,
-                dns=instance.get('dns_name'),
-            )
-
             full_command = command.format(
-                host=host_string,
+                host=self._ssh_host_string(instance.get('dns_name'), user)
             )
 
             print ">> Performing command \033[93m'{cmd}'\033[0m with \033[92m{name} - {dns}\033[0m".format(
